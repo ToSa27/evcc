@@ -31,22 +31,33 @@ func NewMqttProvider(log *util.Logger, client *mqtt.Client, prefix, vin string) 
 
 	topic := fmt.Sprintf("%s/+", base)
 
+	log.DEBUG.Printf("subscribing to topic: %s", topic)
+
 	if err := client.Listen(topic, func(payload string) {
+		log.DEBUG.Printf("message received (%d bytes)", len(payload))
+
 		var res StreamingMessage
 		if err := json.Unmarshal([]byte(payload), &res); err != nil {
-			log.ERROR.Printf("unmarshal: %s: %v", payload, err)
+			log.ERROR.Printf("unmarshal failed: %v, payload: %s", err, payload)
 			return
 		}
 
-		log.TRACE.Printf("recv: %s", payload)
+		log.DEBUG.Printf("parsed message: vin=%s, keys=%d", res.Vin, len(res.Data))
+		for key, val := range res.Data {
+			log.TRACE.Printf("  data: %s = %v", key, val.Value)
+		}
 
 		v.mu.Lock()
 		maps.Copy(v.streaming, res.Data)
 		v.updated = time.Now()
+		log.DEBUG.Printf("streaming data updated, total keys: %d", len(v.streaming))
 		v.mu.Unlock()
 	}); err != nil {
+		log.ERROR.Printf("subscribe failed for topic %s: %v", topic, err)
 		return nil, err
 	}
+
+	log.DEBUG.Printf("subscribed successfully to: %s", topic)
 
 	return v, nil
 }
