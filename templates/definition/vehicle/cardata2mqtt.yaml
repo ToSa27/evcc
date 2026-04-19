@@ -50,21 +50,29 @@ params:
     required: true
     example: WBMW...
   - name: broker
+    description:
+      generic: MQTT Broker
     required: true
     help:
       en: MQTT broker address (e.g. tcp://192.168.1.100:1883)
       de: MQTT-Broker-Adresse (z.B. tcp://192.168.1.100:1883)
     example: tcp://192.168.1.100:1883
   - name: user
+    description:
+      generic: MQTT User
     help:
       en: MQTT broker username
       de: MQTT-Broker-Benutzername
   - name: password
+    description:
+      generic: MQTT Password
     help:
       en: MQTT broker password
       de: MQTT-Broker-Passwort
     mask: true
   - name: prefix
+    description:
+      generic: Topic Prefix
     help:
       en: Topic prefix before {vin}/{key} (e.g. bmw/vehicles)
       de: Topic-Präfix vor {vin}/{key} (z.B. bmw/vehicles)
