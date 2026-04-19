@@ -3,6 +3,7 @@ package vehicle
 import (
 	"context"
 	"errors"
+	"strings"
 
 	"github.com/evcc-io/evcc/api"
 	"github.com/evcc-io/evcc/plugin/mqtt"
@@ -36,6 +37,9 @@ func NewCardata2MqttFromConfig(ctx context.Context, other map[string]any) (api.V
 	if cc.VIN == "" {
 		return nil, errors.New("missing vin")
 	}
+
+	// strip tcp:// scheme- evcc's MQTT client only handles tls:// and bare host:port
+	cc.Config.Broker = strings.TrimPrefix(cc.Config.Broker, "tcp://")
 
 	log := util.NewLogger("cardata2mqtt").Redact(cc.VIN, cc.Config.User, cc.Config.Password)
 

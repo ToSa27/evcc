@@ -54,9 +54,9 @@ params:
       generic: MQTT Broker
     required: true
     help:
-      en: MQTT broker address (e.g. tcp://192.168.1.100:1883)
-      de: MQTT-Broker-Adresse (z.B. tcp://192.168.1.100:1883)
-    example: tcp://192.168.1.100:1883
+      en: MQTT broker address (e.g. 192.168.1.100:1883 or tls://192.168.1.100:8883)
+      de: MQTT-Broker-Adresse (z.B. 192.168.1.100:1883 oder tls://192.168.1.100:8883)
+    example: 192.168.1.100:1883
   - name: user
     description:
       generic: MQTT User
