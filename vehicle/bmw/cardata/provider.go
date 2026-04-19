@@ -113,21 +113,23 @@ func (v *Provider) any(key string) (any, error) {
 	v.mu.Lock()
 	defer v.mu.Unlock()
 
-	_, tokenErr := v.ts.Token()
+	if v.ts != nil {
+		_, tokenErr := v.ts.Token()
 
-	switch {
-	case tokenErr == nil && v.updated.IsZero():
-		// this will only happen once
-		if err := v.setupContainer(); err != nil {
-			v.log.WARN.Println(err)
-		}
-		fallthrough
+		switch {
+		case tokenErr == nil && v.updated.IsZero():
+			// this will only happen once
+			if err := v.setupContainer(); err != nil {
+				v.log.WARN.Println(err)
+			}
+			fallthrough
 
-	case tokenErr == nil && time.Since(v.updated) > v.cache && v.container != "":
-		if err := v.updateContainerData(); err != nil {
-			v.log.WARN.Println(err)
+		case tokenErr == nil && time.Since(v.updated) > v.cache && v.container != "":
+			if err := v.updateContainerData(); err != nil {
+				v.log.WARN.Println(err)
+			}
+			v.updated = time.Now()
 		}
-		v.updated = time.Now()
 	}
 
 	if a, ok := v.streaming[key]; ok {

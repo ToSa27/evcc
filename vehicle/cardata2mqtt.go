@@ -14,7 +14,7 @@ import (
 // Cardata2Mqtt is an api.Vehicle implementation for BMW/Mini cars via custom MQTT broker
 type Cardata2Mqtt struct {
 	*embed
-	*cardata.MqttProvider
+	*cardata.Provider
 }
 
 func init() {
@@ -54,8 +54,8 @@ func NewCardata2MqttFromConfig(ctx context.Context, other map[string]any) (api.V
 	}
 
 	v := &Cardata2Mqtt{
-		embed:        &cc.embed,
-		MqttProvider: provider,
+		embed:    &cc.embed,
+		Provider: provider,
 	}
 
 	return v, nil
