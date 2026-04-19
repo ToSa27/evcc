@@ -133,16 +133,13 @@ func (v *Provider) any(key string) (any, error) {
 	}
 
 	if a, ok := v.streaming[key]; ok {
-		v.log.TRACE.Printf("any(%s): found in streaming = %v", key, a.Value)
 		return a.Value, nil
 	}
 
 	if el, ok := v.rest[key]; ok {
-		v.log.TRACE.Printf("any(%s): found in rest = %v", key, el.Value)
 		return el.Value, nil
 	}
 
-	v.log.TRACE.Printf("any(%s): not available (streaming keys: %d, rest keys: %d)", key, len(v.streaming), len(v.rest))
 	return nil, api.ErrNotAvailable
 }
 
