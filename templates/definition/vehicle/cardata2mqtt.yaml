@@ -1,0 +1,81 @@
+template: cardata2mqtt
+products:
+  - brand: BMW
+    description:
+      generic: CarData via MQTT
+  - brand: Mini
+    description:
+      generic: CarData via MQTT
+requirements:
+  description:
+    de: |
+      Verbindet sich mit einem eigenen MQTT-Broker, der BMW/Mini CarData-Daten bereitstellt.
+      Die folgenden Datenpunkte werden als einzelne Topics erwartet ({prefix}/{vin}/{key}):
+
+      ```
+      vehicle.body.chargingPort.status
+      vehicle.cabin.infotainment.navigation.currentLocation.latitude
+      vehicle.cabin.infotainment.navigation.currentLocation.longitude
+      vehicle.cabin.hvac.preconditioning.status.comfortState
+      vehicle.drivetrain.batteryManagement.header
+      vehicle.drivetrain.electricEngine.charging.hvStatus
+      vehicle.drivetrain.electricEngine.charging.status
+      vehicle.drivetrain.electricEngine.charging.timeRemaining
+      vehicle.drivetrain.electricEngine.kombiRemainingElectricRange
+      vehicle.powertrain.electric.battery.stateOfCharge.target
+      vehicle.vehicle.preConditioning.activity
+      vehicle.vehicle.travelledDistance
+      ```
+    en: |
+      Connects to a custom MQTT broker providing BMW/Mini CarData data.
+      The following data points are expected as individual topics ({prefix}/{vin}/{key}):
+
+      ```
+      vehicle.body.chargingPort.status
+      vehicle.cabin.infotainment.navigation.currentLocation.latitude
+      vehicle.cabin.infotainment.navigation.currentLocation.longitude
+      vehicle.cabin.hvac.preconditioning.status.comfortState
+      vehicle.drivetrain.batteryManagement.header
+      vehicle.drivetrain.electricEngine.charging.hvStatus
+      vehicle.drivetrain.electricEngine.charging.status
+      vehicle.drivetrain.electricEngine.charging.timeRemaining
+      vehicle.drivetrain.electricEngine.kombiRemainingElectricRange
+      vehicle.powertrain.electric.battery.stateOfCharge.target
+      vehicle.vehicle.preConditioning.activity
+      vehicle.vehicle.travelledDistance
+      ```
+params:
+  - preset: vehicle-common
+  - name: vin
+    required: true
+    example: WBMW...
+  - name: broker
+    required: true
+    help:
+      en: MQTT broker address (e.g. tcp://192.168.1.100:1883)
+      de: MQTT-Broker-Adresse (z.B. tcp://192.168.1.100:1883)
+    example: tcp://192.168.1.100:1883
+  - name: user
+    help:
+      en: MQTT broker username
+      de: MQTT-Broker-Benutzername
+  - name: password
+    help:
+      en: MQTT broker password
+      de: MQTT-Broker-Passwort
+    mask: true
+  - name: prefix
+    help:
+      en: Topic prefix before {vin}/{key} (e.g. bmw/vehicles)
+      de: Topic-Präfix vor {vin}/{key} (z.B. bmw/vehicles)
+    example: bmw/vehicles
+  - preset: vehicle-features
+render: |
+  type: cardata2mqtt
+  vin: {{ .vin }}
+  broker: {{ .broker }}
+  {{ if .user }}user: {{ .user }}{{ end }}
+  {{ if .password }}password: {{ .password }}{{ end }}
+  {{ if .prefix }}prefix: {{ .prefix }}{{ end }}
+  {{ include "vehicle-common" . }}
+  {{ include "vehicle-features" . }}
