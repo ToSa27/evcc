@@ -2,7 +2,6 @@ package cardata
 
 import (
 	"encoding/json"
-	"fmt"
 	"maps"
 	"strings"
 	"time"
@@ -15,7 +14,7 @@ import (
 // on a custom MQTT broker instead of BMW's streaming endpoint.
 // The broker is expected to publish the same StreamingMessage JSON payloads
 // as BMW's CarData streaming, just at a configurable topic prefix.
-// Topic pattern: {prefix}/{vin}/+ (or {vin}/+ if prefix is empty).
+// Topic pattern: {prefix}/{vin} (or {vin} if prefix is empty).
 func NewMqttProvider(log *util.Logger, client *mqtt.Client, prefix, vin string) (*Provider, error) {
 	v := &Provider{
 		log:       log,
@@ -24,12 +23,10 @@ func NewMqttProvider(log *util.Logger, client *mqtt.Client, prefix, vin string) 
 		updated:   time.Now(), // prevent REST container setup
 	}
 
-	base := vin
+	topic := vin
 	if prefix != "" {
-		base = strings.TrimRight(prefix, "/") + "/" + vin
+		topic = strings.TrimRight(prefix, "/") + "/" + vin
 	}
-
-	topic := fmt.Sprintf("%s/+", base)
 
 	log.DEBUG.Printf("subscribing to topic: %s", topic)
 
